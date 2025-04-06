@@ -1,123 +1,123 @@
-# План создания локального прототипа системы таймлапс-съёмки
+# Roadmap for Local Time-lapse Photography System Prototype
 
-## 1. Автоматизация съёмки
+## 1. Photography Automation
 
-### Задачи:
+### Tasks:
 
-- Автоматически инициировать съёмку с заданным интервалом.
-- Логировать процессы и ошибки.
+- Automatically initiate shooting at specified intervals.
+- Log processes and errors.
 
-### Действия:
+### Actions:
 
-- **Python-скрипт для съёмки:**  
-  Используй подготовленный скрипт (с командой `gphoto2 --capture-image-and-download`) и доработай его для работы в цикле. Например, реализуй запуск съёмки каждые N минут с помощью бесконечного цикла или настрой cron-задачу.
-- **Планировщик:**
-  - Если использовать системный планировщик – настрой cron на запуск скрипта с нужной периодичностью.
-  - Если скрипт управляет циклом – используй функцию `time.sleep()`.
+- **Node.js script for photography:**  
+  Use the prepared script (with `gphoto2 --capture-image-and-download` command) and adapt it to work in a loop. For example, implement shooting every N minutes using an infinite loop or set up a scheduled task.
+- **Scheduler:**
+  - If using system scheduler – configure cron to run the script with the desired frequency.
+  - If the script manages the cycle – use `setTimeout()` or `setInterval()` functions.
 
-## 2. Организация хранения снимков
+## 2. Photo Storage Organization
 
-### Задачи:
+### Tasks:
 
-- Сохранять снимки в структурированном виде (например, по дате).
-- Обеспечить доступ к файлам для дальнейшей обработки.
+- Save photos in a structured format (e.g., by date).
+- Ensure access to files for further processing.
 
-### Действия:
+### Actions:
 
-- **Структура папок:**  
-  Организуй каталоги, например:
+- **Folder structure:**  
+  Organize directories, for example:
 
   ```
   /photos/YYYY-MM-DD/
   ```
 
-  где каждый новый снимок сохраняется с уникальным именем (на основе временной метки).
+  where each new photo is saved with a unique name (based on timestamp).
 
-- **Логирование:**  
-  Добавь запись в лог-файл при успешном сохранении фото или возникновении ошибок.
+- **Logging:**  
+  Add entries to a log file when photos are successfully saved or when errors occur.
 
-## 3. Генерация таймлапс-видео
+## 3. Time-lapse Video Generation
 
-### Задачи:
+### Tasks:
 
-- Из последовательности снимков создать таймлапс-видео.
-- Настроить параметры (FPS, кодек, разрешение).
+- Create time-lapse videos from photo sequences.
+- Configure parameters (FPS, codec, resolution).
 
-### Действия:
+### Actions:
 
-- **Использование ffmpeg:**  
-  Пример команды:
+- **Using ffmpeg:**  
+  Example command:
   ```bash
   ffmpeg -framerate 24 -pattern_type glob -i '/photos/2025-03-30/*.jpg' -c:v libx264 -pix_fmt yuv420p timelapse.mp4
   ```
-- **Автоматизация:**  
-  Создай отдельный Python-скрипт, который будет запускать ffmpeg по завершении съёмочной сессии или по расписанию (например, по окончании дня).
+- **Automation:**  
+  Create a separate Node.js script that will run ffmpeg after the shooting session is complete or on a schedule (for example, at the end of the day).
 
-## 4. Локальный веб-сервер и интерфейс
+## 4. Local Web Server and Interface
 
-### Задачи:
+### Tasks:
 
-- Создать простой интерфейс для просмотра галереи снимков и сформированного таймлапса.
-- Обеспечить возможность управления (запуск съёмки, просмотр статуса, просмотр видео).
+- Create a simple interface for viewing the photo gallery and generated time-lapse.
+- Provide control capabilities (start shooting, view status, watch videos).
 
-### Действия:
+### Actions:
 
-- **Веб-сервер на Flask:**  
-  Реализуй веб-приложение на Python с использованием Flask. Основные функции:
-  - Отображение списка сохранённых снимков (галерея).
-  - Проигрывание сформированного таймлапс-видео.
-  - Кнопка для ручного запуска съёмки.
-- **Интерфейс:**  
-  Начни с простых HTML-страниц, а затем добавь CSS для улучшения внешнего вида.
+- **Web server with Express.js:**  
+  Implement a web application using Node.js with Express.js. Main functions:
+  - Display a list of saved photos (gallery).
+  - Play generated time-lapse videos.
+  - Button for manually starting the shooting.
+- **Interface:**  
+  Start with simple HTML pages, then add CSS to improve the appearance.
 
-## 5. Аппаратная интеграция
+## 5. Hardware Integration
 
-### Задачи:
+### Tasks:
 
-- Обеспечить стабильное питание и надёжное соединение между компонентами.
-- Собрать всё в компактный и удобный корпус.
+- Ensure stable power and reliable connection between components.
+- Assemble everything in a compact and convenient case.
 
-### Действия:
+### Actions:
 
-- **Контроллер:**  
-  Рассмотри использование Raspberry Pi, который будет:
-  - Запускать Python-скрипты для съёмки и обработки.
-  - Управлять веб-сервером.
-- **Корпус и питание:**  
-  Спланируй сборку корпуса, в котором разместятся:
-  - Камера (с удобным доступом к объективу).
-  - Raspberry Pi (или другой компьютер).
-  - Источник питания (например, Power Bank или адаптер).
-- **Подключение и кабели:**  
-  Убедись, что все соединения надёжны, и предусмотрены способы охлаждения компонентов (если это необходимо).
+- **Controller:**  
+  Consider using Raspberry Pi, which will:
+  - Run Node.js scripts for shooting and processing.
+  - Manage the web server.
+- **Case and power:**  
+  Plan the assembly of a case that will house:
+  - Camera (with convenient access to the lens).
+  - Raspberry Pi (or other computer).
+  - Power source (e.g., power bank or adapter).
+- **Connections and cables:**  
+  Ensure all connections are reliable and provide ways to cool components (if necessary).
 
-## 6. Тестирование и отладка
+## 6. Testing and Debugging
 
-### Задачи:
+### Tasks:
 
-- Проверить работу каждого этапа системы.
-- Убедиться в корректном создании таймлапс-видео и работе веб-интерфейса.
+- Test each stage of the system.
+- Ensure correct creation of time-lapse videos and web interface functionality.
 
-### Действия:
+### Actions:
 
-- **Тестовая съёмка:**  
-  Проведи несколько тестовых циклов автоматической съёмки и проверь, что снимки сохраняются в нужном каталоге.
-- **Проверка генерации видео:**  
-  Запусти ffmpeg-скрипт на тестовой папке с фото, проверь параметры (FPS, качество).
-- **Отладка веб-сервера:**  
-  Запусти Flask-приложение, проверь отображение галереи и воспроизведение видео, настрой логи для отслеживания ошибок.
+- **Test shooting:**  
+  Conduct several test cycles of automatic shooting and verify that photos are saved in the correct directory.
+- **Video generation check:**  
+  Run the ffmpeg script on a test folder with photos, check parameters (FPS, quality).
+- **Web server debugging:**  
+  Launch the Express.js application, check the gallery display and video playback, configure logs to track errors.
 
-## 7. Расширение функционала
+## 7. Feature Expansion
 
-### Возможности для дальнейшего развития:
+### Possibilities for further development:
 
-- **Уведомления:**  
-  Добавь систему уведомлений (например, по email или в мессенджеры) для информирования о завершении съёмки или возникновении ошибок.
-- **Интерфейс управления:**  
-  Реализуй панель для изменения настроек съёмки (интервал, режимы работы камеры) в реальном времени.
-- **Интеграция с облаком:**  
-  Расширь функционал, добавив возможность отправки снимков на облачный сервер для резервного копирования или дальнейшей обработки.
+- **Notifications:**  
+  Add a notification system (e.g., email or messenger) to inform about completed shoots or errors.
+- **Control interface:**  
+  Implement a panel to change shooting settings (interval, camera modes) in real time.
+- **Cloud integration:**  
+  Expand functionality by adding the ability to send photos to a cloud server for backup or further processing.
 
 ---
 
-Этот план позволит создать локальный прототип системы таймлапс-съёмки с использованием камеры Sony A7S, gPhoto2 и сопутствующих компонентов. По мере реализации базовых функций можно добавлять новые возможности и оптимизировать систему.
+This plan will allow you to create a local prototype of a time-lapse photography system using a Sony A7S camera, gPhoto2, and related components. As you implement the basic functions, you can add new features and optimize the system.
