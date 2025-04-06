@@ -1,0 +1,33 @@
+{
+  "name": "timelapsbox",
+  "version": "1.0.0",
+  "description": "A DIY solution for long-term time lapse photography, capturing photos at set intervals and generating professional time-lapse videos",
+  "main": "index.js",
+  "repository": "git@github.com:helius-lab/timelapsbox.git",
+  "author": "Ivan Hilkov <strange.mole@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "capture:py": "python capture_photo.py",
+    "capture": "node capture_photo.js",
+    "capture:series": "node capture_series.js",
+    "generate-video": "node generate_timelapse.js",
+    "start-server": "echo 'Web server not yet implemented'"
+  },
+  "keywords": [
+    "timelapse",
+    "photography",
+    "gphoto2",
+    "raspberry-pi",
+    "construction-timelapse",
+    "long-term-photography"
+  ],
+  "dependencies": {},
+  "devDependencies": {},
+  "python": {
+    "dependencies": [
+      "gphoto2",
+      "flask"
+    ]
+  }
+}
