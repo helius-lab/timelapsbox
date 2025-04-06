@@ -13,10 +13,13 @@ TimelapseBox is a Node.js-based prototype system that captures photos at set int
 
 ## Current Features
 
-- Basic photo capture using connected camera via gphoto2
-- Timestamp-based file naming
-- Scheduled photo capture at regular intervals
-- Timelapse video generation from captured photos
+- Automated photo capture using connected camera via gphoto2
+- Organized file storage in date/time-based folders (data/series_YYYY-MM-DD_HH-MM-SS)
+- Scheduled photo capture at configurable intervals
+- Automatic timelapse video generation after capture sequence
+- Detailed logging with timestamps
+- Customizable video quality and framerate settings
+- Error handling and recovery
 
 ## Planned Features
 
@@ -118,40 +121,49 @@ npm run capture
 
 ### Scheduled photo series
 
-Capture a series of photos over time:
+Capture a series of photos over time and generate a timelapse:
 
 ```bash
 npm run capture:series
 ```
 
-This will take 30 photos over 60 minutes by default. You can configure the number of photos and total time by editing the constants in `capture_series.js`.
+This will take 10 photos over 1 minute by default, then automatically generate a timelapse video. You can configure these settings by editing the constants in `capture_series.js`:
 
-### Generate timelapse video
-
-Create a timelapse video from captured photos:
-
-```bash
-npm run generate-video
+```javascript
+// Settings you can modify
+const TOTAL_TIME_MINUTES = 1; // Total shooting time in minutes
+const TOTAL_PHOTOS = 10; // Total number of photos
+const FPS = 24; // Frames per second for timelapse
+const VIDEO_QUALITY = 23; // Video quality (lower = better, range 0-51)
 ```
 
-The script will automatically find all photos matching the pattern `photo_*.jpg` in the current directory and generate a timelapse video.
+Photos and timelapses are stored in date-based directories:
+
+```
+data/series_YYYY-MM-DD_HH-MM-SS/
+  ├── photo_YYYYMMDD_HHMMSS.jpg
+  ├── photo_YYYYMMDD_HHMMSS.jpg
+  └── timelapse.mp4
+```
 
 ## Configuration
 
 You can adjust the configuration in the JavaScript scripts:
 
-- `capture_series.js`: Modify `TOTAL_TIME_MINUTES` and `TOTAL_PHOTOS` to change capture schedule
-- `generate_timelapse.js`: Adjust `FRAME_RATE`, `PHOTO_DIR`, and `PHOTO_PATTERN` to customize video generation
+- `capture_series.js`: Modify `TOTAL_TIME_MINUTES`, `TOTAL_PHOTOS`, `FPS`, and `VIDEO_QUALITY` to customize capture and video generation settings
 
 ## Development Roadmap
 
-1. Improve basic photo capture script with scheduling ✅
-2. Implement time lapse video generation ✅
-3. Add upload functionality to cloud storage
-4. Create web interface for viewing and managing photos
-5. Design and build weather-resistant enclosure
-6. Add power management for long-term deployment
-7. Integrate remote control capabilities
+1. ✅ Improve basic photo capture script with scheduling
+2. ✅ Implement time lapse video generation
+3. ✅ Organize files in date-based folder structure
+4. Add upload functionality to cloud storage
+5. Create web interface for viewing and managing photos
+6. Design and build weather-resistant enclosure
+7. Add power management for long-term deployment
+8. Integrate remote control capabilities
+
+For more detailed development plans, see [ROADMAP.md](ROADMAP.md).
 
 ## Inspiration
 

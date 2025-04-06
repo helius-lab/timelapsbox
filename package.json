@@ -8,11 +8,7 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "capture:py": "python capture_photo.py",
-    "capture": "node capture_photo.js",
-    "capture:series": "node capture_series.js",
-    "generate-video": "node generate_timelapse.js",
-    "start-server": "echo 'Web server not yet implemented'"
+    "shoot": "node capture_series.js"
   },
   "keywords": [
     "timelapse",
