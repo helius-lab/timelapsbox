@@ -9,7 +9,7 @@ const path = require("path");
 // ====================== SETTINGS ======================
 // Constants for shooting settings (can be modified as needed)
 const TOTAL_TIME_MINUTES = 1; // Total shooting time in minutes
-const TOTAL_PHOTOS = 10; // Total number of photos
+const TOTAL_PHOTOS = 24; // Total number of photos
 const DATA_FOLDER = "data"; // Main folder for data storage
 const FPS = 24; // Frames per second for timelapse
 const VIDEO_QUALITY = 23; // Video quality (lower = better, range 0-51)
