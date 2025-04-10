@@ -9,6 +9,8 @@ TimelapseBox is a Node.js-based prototype system that captures photos at set int
 - Construction site progress documentation
 - Nature changes over seasons
 - Architecture projects
+- Urban development visualization
+- Environmental monitoring
 - Any long-term visual documentation
 
 ## Current Features
@@ -20,6 +22,7 @@ TimelapseBox is a Node.js-based prototype system that captures photos at set int
 - Detailed logging with timestamps
 - Customizable video quality and framerate settings
 - Error handling and recovery
+- Support for RAW+JPEG capture for maximum quality
 
 ## Planned Features
 
@@ -31,15 +34,21 @@ TimelapseBox is a Node.js-based prototype system that captures photos at set int
 - Solar power option
 - Battery management
 - Status monitoring and alerts
+- Automatic deflickering algorithms
+- Motion detection triggers
+- Advanced color grading with LUTs
+- Email/SMS notifications
 
 ## Hardware Requirements
 
-- Camera with gphoto2 compatibility
+- Camera with gphoto2 compatibility (DSLR or mirrorless recommended)
 - Single-board computer (Raspberry Pi recommended)
 - Weather-resistant enclosure
 - Power solution (battery/solar panel)
 - Connectivity module (4G modem/WiFi)
-- Storage media
+- Storage media (high-capacity SD card or external SSD)
+- Optional: ND filters for daytime long exposures
+- Optional: External power bank for extended operation
 
 ## Software Requirements
 
@@ -152,6 +161,27 @@ You can adjust the configuration in the JavaScript scripts:
 
 - `capture_series.js`: Modify `TOTAL_TIME_MINUTES`, `TOTAL_PHOTOS`, `FPS`, and `VIDEO_QUALITY` to customize capture and video generation settings
 
+### Advanced Configuration
+
+For more advanced setups, consider these settings:
+
+- **Long-term deployments**: Increase storage capacity and implement automatic cleanup of old files
+- **Day/night transitions**: Set up different capture parameters based on time of day
+- **Remote monitoring**: Configure network settings for remote access and monitoring
+- **Power management**: Implement sleep cycles to conserve battery during inactive periods
+
+## Camera Settings Recommendations
+
+For optimal timelapse results:
+
+- Use manual mode to prevent exposure flickering
+- Set a fixed white balance
+- Use manual focus
+- For daytime shooting, use aperture around f/8 for maximum sharpness
+- For night shooting, use the widest aperture (lowest f-number)
+- Consider using ND filters for long exposures in daylight
+- Disable image stabilization when camera is mounted on tripod
+
 ## Development Roadmap
 
 1. ✅ Improve basic photo capture script with scheduling
@@ -162,14 +192,54 @@ You can adjust the configuration in the JavaScript scripts:
 6. Design and build weather-resistant enclosure
 7. Add power management for long-term deployment
 8. Integrate remote control capabilities
+9. Implement advanced post-processing options
+10. Add support for multiple cameras
 
 For more detailed development plans, see [ROADMAP.md](ROADMAP.md).
+
+## Troubleshooting
+
+### Common Issues
+
+- **Camera not detected**: Ensure your camera is supported by gphoto2 and is in the correct mode (usually PTP or PC connection mode)
+- **Permission errors**: On Linux, you may need to add your user to the appropriate group or use sudo
+- **Storage issues**: Check available disk space and permissions on the storage directory
+- **Camera auto-sleep**: Disable auto-sleep/power saving features on your camera
+
+### Getting Help
+
+If you encounter issues:
+1. Check the logs for error messages
+2. Verify your camera is on the [supported cameras list](http://www.gphoto.org/proj/libgphoto2/support.php)
+3. Open an issue on GitHub with detailed information about your setup and the problem
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
 ## Inspiration
 
 This project is inspired by photoSentinel's professional time lapse systems. Visit their website at [photosentinel.com](https://photosentinel.com/) to see examples of professional time lapse solutions.
 
-## Additional info
+## Additional Resources
 
 - [gphoto2 supported cameras list](http://www.gphoto.org/proj/libgphoto2/support.php)
 - [ffmpeg documentation](https://ffmpeg.org/documentation.html)
+- [Timelapse photography guide](https://www.bhphotovideo.com/explora/photography/tips-and-solutions/introduction-time-lapse-photography)
+- [Raspberry Pi documentation](https://www.raspberrypi.org/documentation/)
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Acknowledgements
+
+- The gphoto2 team for their excellent camera control library
+- FFmpeg developers for their powerful video processing tools
+- The Node.js community for creating a versatile runtime environment
