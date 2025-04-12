@@ -15,8 +15,8 @@ const { capturePhoto } = require("./camera");
 
 // Default settings
 const DEFAULT_SETTINGS = {
-  totalTimeMinutes: 5, // Total shooting time in minutes
-  totalPhotos: 24, // Total number of photos
+  totalTimeMinutes: 1, // Total shooting time in minutes
+  totalPhotos: 1, // Total number of photos
 };
 
 /**
@@ -26,30 +26,144 @@ const DEFAULT_SETTINGS = {
  */
 function saveCameraConfig(outputPath) {
   return new Promise((resolve, reject) => {
+    // Make sure the output path exists
+    ensureFolderExists(outputPath);
+
     const configFile = path.join(outputPath, "camera_config.txt");
-    log(`Saving camera configuration to: ${configFile}`);
+    log(`Saving camera configuration to: ${configFile}`, "INFO");
 
-    execFile("gphoto2", ["--list-all-config"], (error, stdout, stderr) => {
-      if (error) {
-        log(
-          `Error getting camera configuration: ${stderr || error.message}`,
-          "ERROR"
-        );
-        reject(error);
-        return;
-      }
+    // First try to create a test file to ensure path and permissions are valid
+    try {
+      const testFile = path.join(outputPath, "test_write.txt");
+      fs.writeFileSync(testFile, "Test write permissions");
+      log(`Successfully created test file at: ${testFile}`, "SUCCESS");
 
-      // Write configuration to file
-      fs.writeFile(configFile, stdout, (err) => {
-        if (err) {
-          log(`Error saving camera configuration: ${err.message}`, "ERROR");
-          reject(err);
+      // Remove test file
+      fs.unlinkSync(testFile);
+    } catch (fsError) {
+      log(
+        `⚠️ Error writing test file: ${fsError.message}. Check path and permissions.`,
+        "ERROR"
+      );
+      // Continue anyway to try the actual config save
+    }
+
+    // Try the primary method using --list-all-config
+    try {
+      log(`Method 1: Executing gphoto2 --list-all-config command...`, "INFO");
+      execFile("gphoto2", ["--list-all-config"], (error, stdout, stderr) => {
+        if (error || !stdout || stdout.trim() === "") {
+          log(
+            `Method 1 failed: ${error ? error.message : "Empty output"}`,
+            "ERROR"
+          );
+
+          // Try alternative method using --list-config
+          log(`Method 2: Trying gphoto2 --list-config instead...`, "INFO");
+          execFile("gphoto2", ["--list-config"], (error2, stdout2, stderr2) => {
+            if (error2 || !stdout2 || stdout2.trim() === "") {
+              log(
+                `Method 2 failed as well: ${
+                  error2 ? error2.message : "Empty output"
+                }`,
+                "ERROR"
+              );
+
+              // Try the most direct approach as a last resort
+              log(`Method 3: Trying direct shell command...`, "INFO");
+
+              const shellCmd = `gphoto2 --list-all-config > "${configFile}"`;
+              require("child_process").exec(
+                shellCmd,
+                (error3, stdout3, stderr3) => {
+                  if (error3) {
+                    log(
+                      `All methods failed. Last error: ${error3.message}`,
+                      "ERROR"
+                    );
+                    reject(
+                      new Error("All camera config saving methods failed")
+                    );
+                    return;
+                  }
+
+                  if (fs.existsSync(configFile)) {
+                    const stats = fs.statSync(configFile);
+                    log(
+                      `Method 3 succeeded: ${configFile} (${stats.size} bytes)`,
+                      "SUCCESS"
+                    );
+                    resolve(configFile);
+                  } else {
+                    log(`Method 3 failed: File not created`, "ERROR");
+                    reject(new Error("Could not save camera configuration"));
+                  }
+                }
+              );
+              return;
+            }
+
+            // Second method succeeded
+            log(
+              `Method 2 succeeded (${stdout2.length} bytes). Writing to file...`,
+              "SUCCESS"
+            );
+            fs.writeFile(configFile, stdout2, (err) => {
+              if (err) {
+                log(
+                  `Error writing configuration file: ${err.message}`,
+                  "ERROR"
+                );
+                reject(err);
+                return;
+              }
+
+              if (fs.existsSync(configFile)) {
+                const stats = fs.statSync(configFile);
+                log(
+                  `Camera configuration saved: ${configFile} (${stats.size} bytes)`,
+                  "SUCCESS"
+                );
+                resolve(configFile);
+              } else {
+                log(`File not created despite successful write`, "ERROR");
+                reject(new Error("File not created"));
+              }
+            });
+          });
           return;
         }
-        log(`Camera configuration saved to: ${configFile}`, "SUCCESS");
-        resolve(configFile);
+
+        // First method succeeded
+        log(
+          `Method 1 succeeded (${stdout.length} bytes). Writing to file...`,
+          "SUCCESS"
+        );
+        fs.writeFile(configFile, stdout, (err) => {
+          if (err) {
+            log(`Error writing configuration file: ${err.message}`, "ERROR");
+            reject(err);
+            return;
+          }
+
+          // Verify the file was created
+          if (fs.existsSync(configFile)) {
+            const stats = fs.statSync(configFile);
+            log(
+              `Camera configuration saved: ${configFile} (${stats.size} bytes)`,
+              "SUCCESS"
+            );
+            resolve(configFile);
+          } else {
+            log(`File not created despite successful write`, "ERROR");
+            reject(new Error("File not created"));
+          }
+        });
       });
-    });
+    } catch (execError) {
+      log(`Exception executing gphoto2: ${execError.message}`, "ERROR");
+      reject(execError);
+    }
   });
 }
 
