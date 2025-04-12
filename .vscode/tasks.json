@@ -2,7 +2,7 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Capture Photo Series",
+      "label": "Legacy Capture Series",
       "type": "shell",
       "command": "node capture_series.js",
       "group": {
@@ -14,6 +14,66 @@
         "panel": "new"
       },
       "problemMatcher": []
+    },
+    {
+      "label": "Capture Photo Series",
+      "type": "shell",
+      "command": "npm run capture:series",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": [],
+      "detail": "Capture a series of photos at calculated intervals"
+    },
+    {
+      "label": "Process Photos",
+      "type": "shell",
+      "command": "npm run process",
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": [],
+      "detail": "Process the most recent photo series"
+    },
+    {
+      "label": "Create Timelapse",
+      "type": "shell",
+      "command": "npm run timelapse",
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": [],
+      "detail": "Create a timelapse from processed photos"
+    },
+    {
+      "label": "Full Workflow",
+      "type": "shell",
+      "command": "npm run workflow",
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": [],
+      "detail": "Run the complete workflow: capture → process → timelapse"
     }
   ]
 }
