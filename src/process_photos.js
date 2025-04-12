@@ -6,7 +6,11 @@ const path = require("path");
 const fs = require("fs");
 const { processPhotoSeries } = require("./processing/photo_processor");
 const { log } = require("./utils/logger");
-const { DATA_FOLDER, ensureFolderExists } = require("./utils/filesystem");
+const {
+  DATA_FOLDER,
+  JPG_FOLDER,
+  ensureFolderExists,
+} = require("./utils/filesystem");
 
 async function main() {
   try {
@@ -44,7 +48,7 @@ async function main() {
     }
 
     // Check for the jpg subfolder
-    const jpgFolder = path.join(directory, "jpg");
+    const jpgFolder = path.join(directory, JPG_FOLDER);
 
     if (!fs.existsSync(jpgFolder)) {
       log(`JPG folder not found: ${jpgFolder}`, "ERROR");
@@ -55,7 +59,7 @@ async function main() {
     log(`Starting photo processing for directory: ${jpgFolder}`);
     const processedFiles = await processPhotoSeries(jpgFolder);
     log(
-      `Photo processing completed! ${processedFiles.length} photos processed.`
+      `Photo processing completed! ${processedFiles.length} photos processed and saved to processed folder.`
     );
   } catch (error) {
     log(`Error in photo processing: ${error}`, "ERROR");

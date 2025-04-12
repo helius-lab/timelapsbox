@@ -4,6 +4,7 @@
 const path = require("path");
 const { exec } = require("child_process");
 const { log } = require("../utils/logger");
+const { ensureFolderExists, OUTPUT_FOLDER } = require("../utils/filesystem");
 
 // Default settings for timelapse creation
 const DEFAULT_SETTINGS = {
@@ -32,11 +33,16 @@ function createTimelapse(sourceDir, options = {}) {
 
     const { fps, videoQuality, outputFilename } = config;
 
-    // Default input pattern looks for processed images
-    const inputPattern =
-      config.inputPattern || path.join(sourceDir, "processed_*.jpg");
+    // Create output directory
+    const outputDir = path.join(sourceDir, OUTPUT_FOLDER);
+    ensureFolderExists(outputDir);
 
-    const outputFile = path.join(sourceDir, outputFilename);
+    // Default input pattern looks for processed images in the processed folder
+    const inputPattern =
+      config.inputPattern ||
+      path.join(sourceDir, "processed", "processed_*.jpg");
+
+    const outputFile = path.join(outputDir, outputFilename);
 
     log(`Starting timelapse creation from photos in: ${sourceDir}`);
     log(`Settings:`);

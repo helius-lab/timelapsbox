@@ -9,7 +9,11 @@ const {
   DEFAULT_SETTINGS,
 } = require("./processing/timelapse_creator");
 const { log } = require("./utils/logger");
-const { DATA_FOLDER } = require("./utils/filesystem");
+const {
+  DATA_FOLDER,
+  JPG_FOLDER,
+  PROCESSED_FOLDER,
+} = require("./utils/filesystem");
 
 async function main() {
   try {
@@ -58,24 +62,37 @@ async function main() {
       process.exit(1);
     }
 
-    // Check the jpg subfolder for processed photos
-    const jpgFolder = path.join(directory, "jpg");
+    // First, check if there's a processed directory with processed photos
+    const processedFolder = path.join(directory, PROCESSED_FOLDER);
+    let useProcessedFolder = false;
 
-    if (!fs.existsSync(jpgFolder)) {
-      log(`JPG folder does not exist: ${jpgFolder}`, "ERROR");
-      process.exit(1);
+    if (fs.existsSync(processedFolder)) {
+      const processedFiles = fs
+        .readdirSync(processedFolder)
+        .filter(
+          (file) =>
+            file.startsWith("processed_") && file.toLowerCase().endsWith(".jpg")
+        );
+
+      if (processedFiles.length > 0) {
+        log(
+          `Found ${processedFiles.length} processed photos in ${processedFolder}`
+        );
+        options.inputPattern = path.join(processedFolder, "processed_*.jpg");
+        useProcessedFolder = true;
+      }
     }
 
-    // Check if processed photos exist in jpg folder
-    const processedFiles = fs
-      .readdirSync(jpgFolder)
-      .filter(
-        (file) =>
-          file.startsWith("processed_") && file.toLowerCase().endsWith(".jpg")
-      );
+    // If no processed directory or no processed files, check the jpg subfolder
+    if (!useProcessedFolder) {
+      const jpgFolder = path.join(directory, JPG_FOLDER);
 
-    // If no processed files found, try to find original jpg files
-    if (processedFiles.length === 0) {
+      if (!fs.existsSync(jpgFolder)) {
+        log(`JPG folder does not exist: ${jpgFolder}`, "ERROR");
+        process.exit(1);
+      }
+
+      // Check for original jpg files
       const originalFiles = fs
         .readdirSync(jpgFolder)
         .filter((file) => file.toLowerCase().endsWith(".jpg"));
@@ -86,19 +103,12 @@ async function main() {
         process.exit(1);
       }
 
-      log(
-        `No processed photos found, using ${originalFiles.length} original photos`
-      );
-
-      // Set the input pattern to use original jpg files
+      log(`Using ${originalFiles.length} original photos from JPG folder`);
       options.inputPattern = path.join(jpgFolder, "*.jpg");
-    } else {
-      log(`Found ${processedFiles.length} processed photos in ${jpgFolder}`);
-      options.inputPattern = path.join(jpgFolder, "processed_*.jpg");
     }
 
-    // Create timelapse from jpg photos
-    log(`Starting timelapse creation from photos in: ${jpgFolder}`);
+    // Create timelapse from the appropriate photos
+    log(`Starting timelapse creation using photos from: ${directory}`);
     const outputFile = await createTimelapse(directory, options);
     log(
       `Timelapse creation completed! Video saved to: ${outputFile}`,

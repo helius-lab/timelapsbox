@@ -7,6 +7,11 @@ const { log } = require("./logger");
 
 // Constants
 const DATA_FOLDER = "data"; // Main folder for data storage
+const JPG_FOLDER = "jpg"; // Folder for original JPG files
+const RAW_FOLDER = "raw"; // Folder for RAW files
+const TEMP_FOLDER = "temp"; // Temporary folder for capturing
+const PROCESSED_FOLDER = "processed"; // Folder for processed images
+const OUTPUT_FOLDER = "output"; // Folder for final timelapse videos
 
 /**
  * Creates a folder if it doesn't exist
@@ -38,4 +43,13 @@ function createSessionFolderPath() {
   return path.join(DATA_FOLDER, folderName);
 }
 
-module.exports = { DATA_FOLDER, ensureFolderExists, createSessionFolderPath };
+module.exports = {
+  DATA_FOLDER,
+  JPG_FOLDER,
+  RAW_FOLDER,
+  TEMP_FOLDER,
+  PROCESSED_FOLDER,
+  OUTPUT_FOLDER,
+  ensureFolderExists,
+  createSessionFolderPath,
+};

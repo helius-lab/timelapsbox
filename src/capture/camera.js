@@ -5,7 +5,12 @@ const { execFile } = require("child_process");
 const path = require("path");
 const fs = require("fs");
 const { log } = require("../utils/logger");
-const { ensureFolderExists } = require("../utils/filesystem");
+const {
+  ensureFolderExists,
+  JPG_FOLDER,
+  RAW_FOLDER,
+  TEMP_FOLDER,
+} = require("../utils/filesystem");
 
 /**
  * Takes a photo using gphoto2 and saves both JPG and RAW (CR2) files
@@ -18,8 +23,8 @@ function capturePhoto(outputFolder) {
     ensureFolderExists(outputFolder);
 
     // Create separate folders for JPG and RAW files
-    const jpgFolder = path.join(outputFolder, "jpg");
-    const rawFolder = path.join(outputFolder, "raw");
+    const jpgFolder = path.join(outputFolder, JPG_FOLDER);
+    const rawFolder = path.join(outputFolder, RAW_FOLDER);
     ensureFolderExists(jpgFolder);
     ensureFolderExists(rawFolder);
 
@@ -33,7 +38,7 @@ function capturePhoto(outputFolder) {
     const filenameBase = `photo_${timestamp}`;
 
     // Path for temporary file capture
-    const tempDir = path.join(outputFolder, "temp");
+    const tempDir = path.join(outputFolder, TEMP_FOLDER);
     ensureFolderExists(tempDir);
     const capturePattern = path.join(tempDir, "capt%04n.%C");
 

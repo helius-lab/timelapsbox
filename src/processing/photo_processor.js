@@ -5,6 +5,7 @@ const fs = require("fs");
 const path = require("path");
 const { exec } = require("child_process");
 const { log } = require("../utils/logger");
+const { ensureFolderExists, PROCESSED_FOLDER } = require("../utils/filesystem");
 
 /**
  * Process a single photo using external tools (placeholder for implementation)
@@ -19,11 +20,18 @@ function processPhoto(photoPath, options = {}) {
       return;
     }
 
-    // Get the file's directory and name
+    // Get the file's directory, name, and parent directory (session folder)
     const dir = path.dirname(photoPath);
+    const sessionDir = path.dirname(dir);
     const filename = path.basename(photoPath);
+
+    // Create processed directory if it doesn't exist
+    const processedDir = path.join(sessionDir, PROCESSED_FOLDER);
+    ensureFolderExists(processedDir);
+
+    // Create processed variant name
     const processedFilename = `processed_${filename}`;
-    const outputPath = path.join(dir, processedFilename);
+    const outputPath = path.join(processedDir, processedFilename);
 
     log(`Processing photo: ${photoPath}`);
 

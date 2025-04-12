@@ -6,6 +6,7 @@ const fs = require("fs");
 const path = require("path");
 const {
   DATA_FOLDER,
+  TEMP_FOLDER,
   ensureFolderExists,
   createSessionFolderPath,
 } = require("../utils/filesystem");
@@ -108,7 +109,7 @@ async function captureSeries(settings = {}) {
           clearInterval(intervalId);
 
           // Clean up temporary directory
-          const tempDir = path.join(sessionFolder, "temp");
+          const tempDir = path.join(sessionFolder, TEMP_FOLDER);
           removeDirectory(tempDir);
 
           log(`Series completed! Summary:`, "SUCCESS");
