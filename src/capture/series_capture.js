@@ -4,6 +4,7 @@
 const { log } = require("../utils/logger");
 const fs = require("fs");
 const path = require("path");
+const { execFile } = require("child_process");
 const {
   DATA_FOLDER,
   TEMP_FOLDER,
@@ -17,6 +18,40 @@ const DEFAULT_SETTINGS = {
   totalTimeMinutes: 5, // Total shooting time in minutes
   totalPhotos: 24, // Total number of photos
 };
+
+/**
+ * Saves camera configuration to a file
+ * @param {string} outputPath - Path to save the configuration
+ * @returns {Promise<string>} - Path to the configuration file
+ */
+function saveCameraConfig(outputPath) {
+  return new Promise((resolve, reject) => {
+    const configFile = path.join(outputPath, "camera_config.txt");
+    log(`Saving camera configuration to: ${configFile}`);
+
+    execFile("gphoto2", ["--list-all-config"], (error, stdout, stderr) => {
+      if (error) {
+        log(
+          `Error getting camera configuration: ${stderr || error.message}`,
+          "ERROR"
+        );
+        reject(error);
+        return;
+      }
+
+      // Write configuration to file
+      fs.writeFile(configFile, stdout, (err) => {
+        if (err) {
+          log(`Error saving camera configuration: ${err.message}`, "ERROR");
+          reject(err);
+          return;
+        }
+        log(`Camera configuration saved to: ${configFile}`, "SUCCESS");
+        resolve(configFile);
+      });
+    });
+  });
+}
 
 /**
  * Removes a directory and all files in it
@@ -73,6 +108,14 @@ async function captureSeries(settings = {}) {
     log(`- Interval: ${(intervalMs / 1000).toFixed(1)} seconds`);
     log(`- Output folder: ${sessionFolder}`);
     log(`- Storage: JPG and RAW files in separate folders`);
+
+    // Save camera configuration before starting capture
+    try {
+      await saveCameraConfig(sessionFolder);
+    } catch (error) {
+      log(`Warning: Could not save camera configuration: ${error}`, "ERROR");
+      // Continue with capture even if config saving fails
+    }
 
     let photosCount = 0;
     const startTime = Date.now();
