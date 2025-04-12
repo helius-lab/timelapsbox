@@ -8,7 +8,11 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "shoot": "node capture_series.js"
+    "shoot": "node capture_series.js",
+    "capture:series": "node src/capture_photos.js",
+    "process": "node src/process_photos.js",
+    "timelapse": "node src/create_timelapse.js",
+    "workflow": "npm run capture:series && npm run process && npm run timelapse"
   },
   "keywords": [
     "timelapse",
