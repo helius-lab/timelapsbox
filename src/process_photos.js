@@ -47,8 +47,11 @@ async function main() {
       process.exit(1);
     }
 
+    // Make sure the directory exists before setting up log file
+    ensureFolderExists(directory);
+
     // Set the log file path to continue logging to the same file
-    setLogFile(directory);
+    setLogFile(directory, "processing");
     log(`=== STARTING PHOTO PROCESSING ===`);
 
     // Check for the jpg subfolder

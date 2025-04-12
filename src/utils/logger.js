@@ -4,8 +4,9 @@
 const fs = require("fs");
 const path = require("path");
 
-// Global variable to store log file path
-let logFilePath = null;
+// Global variables to store log file paths
+let sessionLogPath = null;
+let phaseLogPath = null;
 
 /**
  * Formats current time for logs
@@ -16,22 +17,63 @@ function getTimeStamp() {
 }
 
 /**
- * Sets the log file path for the current session
+ * Sets the log files for the current phase
  * @param {string} sessionFolder - Path to the session folder
+ * @param {string} phase - Current phase ('capture', 'processing', 'timelapse')
+ * @returns {Object} Paths to log files
  */
-function setLogFile(sessionFolder) {
-  logFilePath = path.join(sessionFolder, "session_log.txt");
+function setLogFile(sessionFolder, phase) {
+  // Ensure session folder exists before writing
+  if (!fs.existsSync(sessionFolder)) {
+    console.error(
+      `Cannot set log files: directory ${sessionFolder} does not exist`
+    );
+    try {
+      fs.mkdirSync(sessionFolder, { recursive: true });
+      console.log(`Created directory: ${sessionFolder}`);
+    } catch (error) {
+      console.error(`Failed to create directory: ${error.message}`);
+      return { success: false };
+    }
+  }
 
-  // Write initial header to log file
+  // Define log file paths
+  sessionLogPath = path.join(sessionFolder, "session_log.txt");
+  phaseLogPath = path.join(sessionFolder, `${phase}_log.txt`);
+
   const timestamp = getTimeStamp();
-  const header = `=== TIMELAPSEBOX SESSION LOG STARTED AT ${timestamp} ===\n`;
-  fs.writeFileSync(logFilePath, header);
 
-  return logFilePath;
+  // Initialize or append to session log file
+  try {
+    if (!fs.existsSync(sessionLogPath)) {
+      // Create new session log if it doesn't exist
+      const sessionHeader = `=== TIMELAPSEBOX SESSION LOG STARTED AT ${timestamp} ===\n`;
+      fs.writeFileSync(sessionLogPath, sessionHeader);
+    }
+  } catch (error) {
+    console.error(`Failed to initialize session log file: ${error.message}`);
+    sessionLogPath = null;
+  }
+
+  // Create phase-specific log file
+  try {
+    const phaseHeader = `=== TIMELAPSEBOX ${phase.toUpperCase()} LOG STARTED AT ${timestamp} ===\n`;
+    fs.writeFileSync(phaseLogPath, phaseHeader);
+    console.log(`Phase log initialized: ${phaseLogPath}`);
+  } catch (error) {
+    console.error(`Failed to initialize phase log file: ${error.message}`);
+    phaseLogPath = null;
+  }
+
+  return {
+    success: true,
+    sessionLogPath,
+    phaseLogPath,
+  };
 }
 
 /**
- * Prints a message to console with timestamp and optionally writes to log file
+ * Prints a message to console with timestamp and writes to log files
  * @param {string} message - Message to output
  * @param {string} [type='INFO'] - Message type (INFO, ERROR, SUCCESS)
  * @returns {string} Formatted log message
@@ -54,12 +96,21 @@ function log(message, type = "INFO") {
       console.log(formattedMessage);
   }
 
-  // If log file is set, write to file
-  if (logFilePath) {
+  // Write to session log file if set
+  if (sessionLogPath) {
     try {
-      fs.appendFileSync(logFilePath, formattedMessage + "\n");
+      fs.appendFileSync(sessionLogPath, formattedMessage + "\n");
     } catch (error) {
-      console.error(`Failed to write to log file: ${error.message}`);
+      console.error(`Failed to write to session log file: ${error.message}`);
+    }
+  }
+
+  // Write to phase log file if set
+  if (phaseLogPath) {
+    try {
+      fs.appendFileSync(phaseLogPath, formattedMessage + "\n");
+    } catch (error) {
+      console.error(`Failed to write to phase log file: ${error.message}`);
     }
   }
 

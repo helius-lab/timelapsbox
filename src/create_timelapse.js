@@ -13,6 +13,7 @@ const {
   DATA_FOLDER,
   JPG_FOLDER,
   PROCESSED_FOLDER,
+  ensureFolderExists,
 } = require("./utils/filesystem");
 
 async function main() {
@@ -62,8 +63,11 @@ async function main() {
       process.exit(1);
     }
 
+    // Make sure the directory exists before setting up log file
+    ensureFolderExists(directory);
+
     // Set the log file path to continue logging to the same file
-    setLogFile(directory);
+    setLogFile(directory, "timelapse");
     log(`=== STARTING TIMELAPSE CREATION ===`);
 
     // First, check if there's a processed directory with processed photos

@@ -169,13 +169,29 @@ If no directory is specified, it uses the most recent series.
 
 ### Viewing Session Logs
 
-You can view the complete log for any session:
+You can view logs for any session:
 
 ```bash
-npm run logs [seriesDirectory]
+npm run logs [seriesDirectory] [logType]
 ```
 
-If no directory is specified, it displays logs for the most recent session.
+Parameters:
+
+- `seriesDirectory`: Directory containing the session (if not specified, shows the most recent session)
+- `logType`: Type of log to display (options: `session`, `capture`, `processing`, `timelapse`, `all`). Default: `session`
+
+Examples:
+
+```bash
+# View the combined log for the most recent session
+npm run logs
+
+# View all logs (all phases) for a specific session
+npm run logs data/series_2023-04-01_12-30-00 all
+
+# View only the timelapse creation logs for the most recent session
+npm run logs . timelapse
+```
 
 ### Directory Structure
 
@@ -185,6 +201,9 @@ Photos and timelapses are stored in date-based directories with an organized str
 data/series_YYYY-MM-DD_HH-MM-SS/
   ├── camera_config.txt     - Saved camera settings
   ├── session_log.txt       - Complete session log file
+  ├── capture_log.txt       - Log for photo capture phase
+  ├── processing_log.txt    - Log for photo processing phase
+  ├── timelapse_log.txt     - Log for timelapse creation phase
   ├── jpg/                  - Original JPG files
   │   └── photo_*.jpg
   ├── raw/                  - Original RAW (CR2) files

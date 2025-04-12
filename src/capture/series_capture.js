@@ -15,8 +15,8 @@ const { capturePhoto } = require("./camera");
 
 // Default settings
 const DEFAULT_SETTINGS = {
-  totalTimeMinutes: 1, // Total shooting time in minutes
-  totalPhotos: 1, // Total number of photos
+  totalTimeMinutes: 10, // Total shooting time in minutes
+  totalPhotos: 6 * 10, // Total number of photos
 };
 
 /**
@@ -215,8 +215,11 @@ async function captureSeries(settings = {}) {
     // Create unique folder for the current series inside data folder
     const sessionFolder = createSessionFolderPath();
 
+    // Make sure the session folder exists before setting up log file
+    ensureFolderExists(sessionFolder);
+
     // Initialize log file for the session
-    setLogFile(sessionFolder);
+    setLogFile(sessionFolder, "capture");
 
     log(`=== STARTING PHOTO SERIES ===`);
     log(`Settings:`);
