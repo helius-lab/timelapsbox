@@ -22,6 +22,7 @@ TimelapseBox is a Node.js-based prototype system that captures photos at set int
 - Separate storage for processed images and output videos
 - Scheduled photo capture at configurable intervals
 - Automatic timelapse video generation after capture sequence
+- Camera configuration saving for each session
 - Detailed logging with timestamps
 - Customizable video quality and framerate settings
 - Error handling and recovery
@@ -144,6 +145,8 @@ npm run capture:series [totalTimeMinutes] [totalPhotos]
 
 This will capture photos at calculated intervals. Default settings are 5 minutes total time with 24 photos.
 
+Before starting the capture, the system automatically saves all current camera settings to a `camera_config.txt` file in the session directory, which is useful for reproducing settings or troubleshooting later.
+
 ### Step 2: Process Photos
 
 Process the captured photos (applies adjustments, filters, etc.):
@@ -170,6 +173,7 @@ Photos and timelapses are stored in date-based directories with an organized str
 
 ```
 data/series_YYYY-MM-DD_HH-MM-SS/
+  ├── camera_config.txt     - Saved camera settings
   ├── jpg/                  - Original JPG files
   │   └── photo_*.jpg
   ├── raw/                  - Original RAW (CR2) files
@@ -223,13 +227,14 @@ For optimal timelapse results:
 3. ✅ Organize files in date-based folder structure
 4. ✅ Create modular structure for capture, processing, and output
 5. ✅ Add support for RAW+JPEG capture and organization
-6. Add upload functionality to cloud storage
-7. Create web interface for viewing and managing photos
-8. Design and build weather-resistant enclosure
-9. Add power management for long-term deployment
-10. Integrate remote control capabilities
-11. Implement advanced post-processing options
-12. Add support for multiple cameras
+6. ✅ Save camera configuration for each session
+7. Add upload functionality to cloud storage
+8. Create web interface for viewing and managing photos
+9. Design and build weather-resistant enclosure
+10. Add power management for long-term deployment
+11. Integrate remote control capabilities
+12. Implement advanced post-processing options
+13. Add support for multiple cameras
 
 For more detailed development plans, see [ROADMAP.md](ROADMAP.md).
 
