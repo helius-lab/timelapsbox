@@ -12,7 +12,8 @@
     "capture:series": "node src/capture_photos.js",
     "process": "node src/process_photos.js",
     "timelapse": "node src/create_timelapse.js",
-    "workflow": "npm run capture:series && npm run process && npm run timelapse"
+    "workflow": "npm run capture:series && npm run process && npm run timelapse",
+    "logs": "node src/utils/view_logs.js"
   },
   "keywords": [
     "timelapse",

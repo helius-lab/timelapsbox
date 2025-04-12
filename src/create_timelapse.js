@@ -8,7 +8,7 @@ const {
   createTimelapse,
   DEFAULT_SETTINGS,
 } = require("./processing/timelapse_creator");
-const { log } = require("./utils/logger");
+const { log, setLogFile } = require("./utils/logger");
 const {
   DATA_FOLDER,
   JPG_FOLDER,
@@ -62,6 +62,10 @@ async function main() {
       process.exit(1);
     }
 
+    // Set the log file path to continue logging to the same file
+    setLogFile(directory);
+    log(`=== STARTING TIMELAPSE CREATION ===`);
+
     // First, check if there's a processed directory with processed photos
     const processedFolder = path.join(directory, PROCESSED_FOLDER);
     let useProcessedFolder = false;
@@ -114,6 +118,9 @@ async function main() {
       `Timelapse creation completed! Video saved to: ${outputFile}`,
       "SUCCESS"
     );
+
+    // Add workflow completion message for when this is part of the full workflow
+    log(`=== TIMELAPSEBOX WORKFLOW COMPLETED SUCCESSFULLY ===`, "SUCCESS");
   } catch (error) {
     log(`Error in timelapse creation: ${error}`, "ERROR");
     process.exit(1);

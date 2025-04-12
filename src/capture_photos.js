@@ -49,6 +49,9 @@ async function main() {
         "INFO"
       );
     }
+
+    // Return the session folder so it can be used by subsequent scripts
+    return result.sessionFolder;
   } catch (error) {
     log(`Error in capture photos process: ${error}`, "ERROR");
     process.exit(1);

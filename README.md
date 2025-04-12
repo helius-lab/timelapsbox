@@ -167,6 +167,16 @@ npm run timelapse [seriesDirectory] [fps] [quality]
 
 If no directory is specified, it uses the most recent series.
 
+### Viewing Session Logs
+
+You can view the complete log for any session:
+
+```bash
+npm run logs [seriesDirectory]
+```
+
+If no directory is specified, it displays logs for the most recent session.
+
 ### Directory Structure
 
 Photos and timelapses are stored in date-based directories with an organized structure:
@@ -174,6 +184,7 @@ Photos and timelapses are stored in date-based directories with an organized str
 ```
 data/series_YYYY-MM-DD_HH-MM-SS/
   ├── camera_config.txt     - Saved camera settings
+  ├── session_log.txt       - Complete session log file
   ├── jpg/                  - Original JPG files
   │   └── photo_*.jpg
   ├── raw/                  - Original RAW (CR2) files

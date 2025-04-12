@@ -1,7 +1,7 @@
 /**
  * Module for capturing photo series in the TimelapseBox project
  */
-const { log } = require("../utils/logger");
+const { log, setLogFile } = require("../utils/logger");
 const fs = require("fs");
 const path = require("path");
 const { execFile } = require("child_process");
@@ -214,6 +214,9 @@ async function captureSeries(settings = {}) {
 
     // Create unique folder for the current series inside data folder
     const sessionFolder = createSessionFolderPath();
+
+    // Initialize log file for the session
+    setLogFile(sessionFolder);
 
     log(`=== STARTING PHOTO SERIES ===`);
     log(`Settings:`);

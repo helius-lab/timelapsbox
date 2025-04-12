@@ -5,7 +5,7 @@
 const path = require("path");
 const fs = require("fs");
 const { processPhotoSeries } = require("./processing/photo_processor");
-const { log } = require("./utils/logger");
+const { log, setLogFile } = require("./utils/logger");
 const {
   DATA_FOLDER,
   JPG_FOLDER,
@@ -46,6 +46,10 @@ async function main() {
       log(`Directory does not exist: ${directory}`, "ERROR");
       process.exit(1);
     }
+
+    // Set the log file path to continue logging to the same file
+    setLogFile(directory);
+    log(`=== STARTING PHOTO PROCESSING ===`);
 
     // Check for the jpg subfolder
     const jpgFolder = path.join(directory, JPG_FOLDER);
