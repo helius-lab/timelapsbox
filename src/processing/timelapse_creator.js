@@ -33,8 +33,14 @@ function createTimelapse(sourceDir, options = {}) {
 
     const { fps, videoQuality, outputFilename } = config;
 
-    // Create output directory
-    const outputDir = path.join(sourceDir, OUTPUT_FOLDER);
+    // Create output directory - use custom if provided in options, otherwise default
+    let outputDir;
+    if (config.outputFolder) {
+      outputDir = config.outputFolder;
+    } else {
+      outputDir = path.join(sourceDir, OUTPUT_FOLDER);
+    }
+
     ensureFolderExists(outputDir);
 
     // Default input pattern looks for processed images in the processed folder

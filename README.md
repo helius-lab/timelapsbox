@@ -27,6 +27,7 @@ TimelapseBox is a Node.js-based prototype system that captures photos at set int
 - Customizable video quality and framerate settings
 - Error handling and recovery
 - Support for RAW+JPEG capture for maximum quality
+- Custom output folders for photo processing and timelapse creation (useful for debugging)
 
 ## Planned Features
 
@@ -152,20 +153,54 @@ Before starting the capture, the system automatically saves all current camera s
 Process the captured photos (applies adjustments, filters, etc.):
 
 ```bash
-npm run process [seriesDirectory]
+npm run process [seriesDirectory] [--output=customFolder]
 ```
 
-If no directory is specified, it uses the most recent series.
+Parameters:
+
+- `seriesDirectory`: Optional. The directory containing the photo series to process. If not specified, uses the most recent series.
+- `--output=customFolder`: Optional. Specify a custom folder for storing processed photos. Useful for debugging or comparing different processing techniques.
+
+Examples:
+
+```bash
+# Process the most recent series
+npm run process
+
+# Process a specific series
+npm run process data/series_2023-04-01_12-30-00
+
+# Process with custom output folder
+npm run process data/series_2023-04-01_12-30-00 --output=processing_test
+```
 
 ### Step 3: Create Timelapse
 
 Generate the timelapse video from processed photos:
 
 ```bash
-npm run timelapse [seriesDirectory] [fps] [quality]
+npm run timelapse [seriesDirectory] [fps] [quality] [--output=customFolder]
 ```
 
-If no directory is specified, it uses the most recent series.
+Parameters:
+
+- `seriesDirectory`: Optional. The directory containing the processed photos. If not specified, uses the most recent series.
+- `fps`: Optional. Frames per second for the timelapse video. Default is 24 fps.
+- `quality`: Optional. Video quality setting (0-51, lower is better). Default is 23.
+- `--output=customFolder`: Optional. Specify a custom folder for storing the output video. Useful for debugging or creating multiple versions.
+
+Examples:
+
+```bash
+# Create timelapse from the most recent series
+npm run timelapse
+
+# Create timelapse with specific fps and quality
+npm run timelapse data/series_2023-04-01_12-30-00 30 18
+
+# Create timelapse with custom output folder
+npm run timelapse data/series_2023-04-01_12-30-00 --output=video_test
+```
 
 ### Viewing Session Logs
 
@@ -212,6 +247,8 @@ data/series_YYYY-MM-DD_HH-MM-SS/
   │   └── processed_*.jpg
   └── output/               - Final timelapse videos
       └── timelapse.mp4
+  └── custom_folders/       - Custom output folders (if specified)
+      └── processed_*.jpg or timelapse.mp4
 ```
 
 ## Configuration
@@ -223,6 +260,8 @@ You can adjust the configuration by:
    ```bash
    npm run capture:series 10 30  # 10 minutes, 30 photos
    npm run timelapse data/series_2023-04-01_12-30-00 30 18  # fps=30, quality=18
+   npm run process --output=debug_folder  # process with custom output directory
+   npm run timelapse --output=test_videos  # create timelapse with custom output
    ```
 
 2. Editing the DEFAULT_SETTINGS in the source files:
@@ -258,13 +297,14 @@ For optimal timelapse results:
 4. ✅ Create modular structure for capture, processing, and output
 5. ✅ Add support for RAW+JPEG capture and organization
 6. ✅ Save camera configuration for each session
-7. Add upload functionality to cloud storage
-8. Create web interface for viewing and managing photos
-9. Design and build weather-resistant enclosure
-10. Add power management for long-term deployment
-11. Integrate remote control capabilities
-12. Implement advanced post-processing options
-13. Add support for multiple cameras
+7. ✅ Add support for custom output directories
+8. Add upload functionality to cloud storage
+9. Create web interface for viewing and managing photos
+10. Design and build weather-resistant enclosure
+11. Add power management for long-term deployment
+12. Integrate remote control capabilities
+13. Implement advanced post-processing options
+14. Add support for multiple cameras
 
 For more detailed development plans, see [ROADMAP.md](ROADMAP.md).
 

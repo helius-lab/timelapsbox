@@ -25,8 +25,14 @@ function processPhoto(photoPath, options = {}) {
     const sessionDir = path.dirname(dir);
     const filename = path.basename(photoPath);
 
-    // Create processed directory if it doesn't exist
-    const processedDir = path.join(sessionDir, PROCESSED_FOLDER);
+    // Determine output directory - use custom if provided in options, otherwise default
+    let processedDir;
+    if (options.outputFolder) {
+      processedDir = options.outputFolder;
+    } else {
+      processedDir = path.join(sessionDir, PROCESSED_FOLDER);
+    }
+
     ensureFolderExists(processedDir);
 
     // Create processed variant name
@@ -59,6 +65,10 @@ function processPhoto(photoPath, options = {}) {
 async function processPhotoSeries(directory, options = {}) {
   return new Promise((resolve, reject) => {
     log(`Processing photo series in directory: ${directory}`);
+
+    if (options.outputFolder) {
+      log(`Using custom output folder: ${options.outputFolder}`);
+    }
 
     // Get all the JPG files in the directory
     const files = fs

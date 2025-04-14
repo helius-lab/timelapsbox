@@ -1,6 +1,6 @@
 /**
  * Main script for processing photos in a series
- * Usage: node src/process_photos.js [directory]
+ * Usage: node src/process_photos.js [directory] [--output=custom_output_folder]
  */
 const path = require("path");
 const fs = require("fs");
@@ -9,6 +9,7 @@ const { log, setLogFile } = require("./utils/logger");
 const {
   DATA_FOLDER,
   JPG_FOLDER,
+  PROCESSED_FOLDER,
   ensureFolderExists,
 } = require("./utils/filesystem");
 
@@ -17,6 +18,15 @@ async function main() {
     // Parse command line arguments
     const args = process.argv.slice(2);
     let directory;
+    let customOutputFolder = null;
+
+    // Check for output folder argument (format: --output=folder_name)
+    const outputArg = args.find((arg) => arg.startsWith("--output="));
+    if (outputArg) {
+      customOutputFolder = outputArg.split("=")[1];
+      // Remove the output argument from args
+      args.splice(args.indexOf(outputArg), 1);
+    }
 
     if (args.length > 0) {
       directory = args[0];
@@ -64,7 +74,23 @@ async function main() {
 
     // Process photos in the jpg directory
     log(`Starting photo processing for directory: ${jpgFolder}`);
-    const processedFiles = await processPhotoSeries(jpgFolder);
+    const options = {};
+
+    // If custom output folder is specified, add it to options
+    if (customOutputFolder) {
+      const outputPath = path.isAbsolute(customOutputFolder)
+        ? customOutputFolder
+        : path.join(directory, customOutputFolder);
+
+      ensureFolderExists(outputPath);
+      options.outputFolder = outputPath;
+      log(`Using custom output folder: ${outputPath}`);
+    } else {
+      const defaultOutputPath = path.join(directory, PROCESSED_FOLDER);
+      log(`Using default output folder: ${defaultOutputPath}`);
+    }
+
+    const processedFiles = await processPhotoSeries(jpgFolder, options);
     log(
       `Photo processing completed! ${processedFiles.length} photos processed and saved to processed folder.`
     );

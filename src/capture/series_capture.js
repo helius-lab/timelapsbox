@@ -15,8 +15,8 @@ const { capturePhoto } = require("./camera");
 
 // Default settings
 const DEFAULT_SETTINGS = {
-  totalTimeMinutes: 10, // Total shooting time in minutes
-  totalPhotos: 6 * 10, // Total number of photos
+  totalTimeMinutes: 5, // Total shooting time in minutes
+  totalPhotos: 8 * 5, // Total number of photos
 };
 
 /**

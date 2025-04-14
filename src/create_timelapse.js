@@ -1,6 +1,6 @@
 /**
  * Main script for creating a timelapse from processed photos
- * Usage: node src/create_timelapse.js [directory] [fps] [quality]
+ * Usage: node src/create_timelapse.js [directory] [fps] [quality] [--output=custom_output_folder]
  */
 const path = require("path");
 const fs = require("fs");
@@ -13,6 +13,7 @@ const {
   DATA_FOLDER,
   JPG_FOLDER,
   PROCESSED_FOLDER,
+  OUTPUT_FOLDER,
   ensureFolderExists,
 } = require("./utils/filesystem");
 
@@ -22,6 +23,15 @@ async function main() {
     const args = process.argv.slice(2);
     let directory;
     const options = { ...DEFAULT_SETTINGS };
+    let customOutputFolder = null;
+
+    // Check for output folder argument (format: --output=folder_name)
+    const outputArg = args.find((arg) => arg.startsWith("--output="));
+    if (outputArg) {
+      customOutputFolder = outputArg.split("=")[1];
+      // Remove the output argument from args
+      args.splice(args.indexOf(outputArg), 1);
+    }
 
     // Parse directory argument
     if (args.length > 0) {
@@ -69,6 +79,20 @@ async function main() {
     // Set the log file path to continue logging to the same file
     setLogFile(directory, "timelapse");
     log(`=== STARTING TIMELAPSE CREATION ===`);
+
+    // If custom output folder is specified, add it to options
+    if (customOutputFolder) {
+      const outputPath = path.isAbsolute(customOutputFolder)
+        ? customOutputFolder
+        : path.join(directory, customOutputFolder);
+
+      ensureFolderExists(outputPath);
+      options.outputFolder = outputPath;
+      log(`Using custom output folder: ${outputPath}`);
+    } else {
+      const defaultOutputPath = path.join(directory, OUTPUT_FOLDER);
+      log(`Using default output folder: ${defaultOutputPath}`);
+    }
 
     // First, check if there's a processed directory with processed photos
     const processedFolder = path.join(directory, PROCESSED_FOLDER);
