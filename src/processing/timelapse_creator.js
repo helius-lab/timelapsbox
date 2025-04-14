@@ -57,13 +57,14 @@ function createTimelapse(sourceDir, options = {}) {
     log(`- Output file: ${outputFile}`);
 
     // Parameters for ffmpeg:
+    // -y: overwrite output files without asking
     // -framerate: frame rate (FPS)
     // -pattern_type glob: use glob pattern to find files
     // -i: input file pattern
     // -c:v libx264: h.264 codec
     // -pix_fmt yuv420p: pixel format for better compatibility
     // -crf: video quality (lower value = higher quality)
-    const command = `ffmpeg -framerate ${fps} -pattern_type glob -i "${inputPattern}" -c:v libx264 -pix_fmt yuv420p -crf ${videoQuality} "${outputFile}"`;
+    const command = `ffmpeg -y -framerate ${fps} -pattern_type glob -i "${inputPattern}" -c:v libx264 -pix_fmt yuv420p -crf ${videoQuality} "${outputFile}"`;
 
     log(`Running command: ${command}`);
 

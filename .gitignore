@@ -2,6 +2,7 @@
 *.jpeg
 *.mp4
 data/
+_data/
 
 # Dependency directories
 node_modules/
