@@ -9,7 +9,7 @@ const { ensureFolderExists, OUTPUT_FOLDER } = require("../utils/filesystem");
 // Default settings for timelapse creation
 const DEFAULT_SETTINGS = {
   fps: 24, // Frames per second for timelapse
-  videoQuality: 23, // Video quality (lower = better, range 0-51)
+  videoQuality: 48, // Video quality (lower = better, range 0-51)
   outputFilename: "timelapse.mp4", // Default output filename
 };
 
@@ -64,7 +64,7 @@ function createTimelapse(sourceDir, options = {}) {
     // -c:v libx264: h.264 codec
     // -pix_fmt yuv420p: pixel format for better compatibility
     // -crf: video quality (lower value = higher quality)
-    const command = `ffmpeg -y -framerate ${fps} -pattern_type glob -i "${inputPattern}" -c:v libx264 -pix_fmt yuv420p -crf ${videoQuality} "${outputFile}"`;
+    const command = `ffmpeg -y -framerate ${fps} -pattern_type glob -i "${inputPattern}" -vf "deflicker,minterpolate='fps=${fps}:mi_mode=mci:mc_mode=aobmc:vsbmc=1',format=yuv420p" -c:v libx264 -preset slow -tune film -crf ${videoQuality} "${outputFile}"`;
 
     log(`Running command: ${command}`);
 
