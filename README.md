@@ -355,3 +355,76 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - The gphoto2 team for their excellent camera control library
 - FFmpeg developers for their powerful video processing tools
 - The Node.js community for creating a versatile runtime environment
+
+Итог: имея JPG c камеры и не внося изменений - мы можем добиться эфекта `кинематаграфичности` внося корректировки черз фильтры. Набор параметров фиксированный, подсобрал их в гист выше. Для упрощения экспериментов - зафиксирую его вот в таком состоянии https://github.com/helius-lab/timelapsbox/blob/main/src/processing/timelapse_creator.js#L62.
+
+Дальше по плану брать RAW и корректировать его, формировать таймлапс и сравнивать с timelaps014.
+
+Из важного|интересного:
+
+- https://github.com/helius-lab/timelapsbox/blob/main/src/processing/timelapse_creator.js#L12 параметр `videoQuality` отвечает за качество (если ставить его низким то вес и время обработки растут); - ffmpeg может делать умную стабилизацию в два прохода
+
+```
+ffmpeg -framerate 24 -i "frames%04d.jpg" \
+  -vf "vidstabdetect=shakiness=5:accuracy=9:result=transforms.trf" \
+  -f null /dev/null
+```
+
+```
+ffmpeg -framerate 24 -i "frames%04d.jpg" -c:v libx264 -preset slow -crf 18 -pix_fmt yuv420p -movflags +faststart \
+  -vf "deflicker=size=10:mode=pm,
+       vidstabtransform=input=transforms.trf:zoom=0:optzoom=1:smoothing=15,
+       scale=1920:1080:force_original_aspect_ratio=decrease,
+       pad=1920:1080:(ow-iw)/2:(oh-ih)/2,
+       format=yuv420p" \
+  -c:a copy output.mp4
+```
+
+- есть настройки curves | lut | pad | crop требуют отдельного ресерча
+
+Общение с чатом гпт:
+
+https://chatgpt.com/share/67fdc502-379c-800c-9ca7-7e505e09bddc
+https://chatgpt.com/share/67fdc582-ceb0-800c-9a1c-c7de4b501b3c
+
+Вот исправленный и немного вычитанный вариант текста:
+
+⸻
+
+Итог: имея JPG с камеры и не внося изменений в исходные кадры, можно добиться эффекта кинематографичности с помощью фильтров. Набор параметров фиксирован — я собрал их в гист выше. Для упрощения экспериментов зафиксирую текущую конфигурацию вот в этом состоянии:
+https://github.com/helius-lab/timelapsbox/blob/main/src/processing/timelapse_creator.js#L62
+
+Дальше по плану:
+Работать с RAW-файлами: корректировать их, формировать таймлапс и сравнивать результат с timelaps014.
+
+Из важного и интересного:
+
+- Параметр videoQuality https://github.com/helius-lab/timelapsbox/blob/main/src/processing/timelapse_creator.js#L12 отвечает за качество: при низких значениях увеличивается вес и время обработки.
+- ffmpeg умеет делать умную стабилизацию в два прохода:
+
+```bash
+ffmpeg -framerate 24 -i "frames%04d.jpg" \
+  -vf "vidstabdetect=shakiness=5:accuracy=9:result=transforms.trf" \
+  -f null /dev/null
+```
+
+```bash
+ffmpeg -framerate 24 -i "frames%04d.jpg" -c:v libx264 -preset slow -crf 18 -pix_fmt yuv420p -movflags +faststart \
+  -vf "deflicker=size=10:mode=pm,
+       vidstabtransform=input=transforms.trf:zoom=0:optzoom=1:smoothing=15,
+       scale=1920:1080:force_original_aspect_ratio=decrease,
+       pad=1920:1080:(ow-iw)/2:(oh-ih)/2,
+       format=yuv420p" \
+  -c:a copy output.mp4
+```
+
+- Настройки curves, lut, pad, crop требуют отдельного ресёрча.
+
+Общение с ChatGPT:
+
+- https://chatgpt.com/share/67fdc502-379c-800c-9ca7-7e505e09bddc
+- https://chatgpt.com/share/67fdc582-ceb0-800c-9a1c-c7de4b501b3c
+
+⸻
+
+Если хочешь, могу помочь оформить это как часть README или доку внутри репозитория.

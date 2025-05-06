@@ -60,14 +60,13 @@ function createTimelapse(sourceDir, options = {}) {
 
     // Define video filters with clear variable name
     const videoFilters = [
+      "scale=w=-2:h=trunc(ih/2)*2", // Ensure even dimensions for h264
       "deshake",
       "hqdn3d=1.5:1.5:6:6",
       "deflicker", // Remove flickering
-      `minterpolate=fps=${
-        fps * 2
-      }:mi_mode=mci:mc_mode=aobmc:me_mode=bidir:vsbmc=1`, // Motion interpolation
+      `minterpolate=fps=${fps}:mi_mode=mci:mc_mode=aobmc:me_mode=bidir:vsbmc=1`, // Motion interpolation
       `fps=${fps}`, // Ensure consistent framerate
-      "eq=brightness=-0.15:contrast=1.1:saturation=1.5:gamma=1:gamma_r=0.9:gamma_g=1.0:gamma_b=1.2", // Color/exposure adjustment
+      // "eq=brightness=-0.15:contrast=1.1:saturation=1.5:gamma=1:gamma_r=0.9:gamma_g=1.0:gamma_b=1.2", // Color/exposure adjustment
       "format=yuv420p", // Pixel format for compatibility
     ].join(",");
 
